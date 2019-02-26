@@ -44,12 +44,15 @@ n_idx = 0 # negative
 d_idx = 0 # dont care
 idx = 0
 box_idx = 0
-for annotation in annotations:
-    annotation = annotation.strip().split(' ')
-    im_path = os.path.join(prefix, annotation[0])
+for annot in annotations:
+    annot = annot.strip().split(' ')
+    im_path = os.path.join(prefix, annot[0])
     print(im_path)
-    bbox = list(map(float, annotation[1:]))
+    bbox = list(map(float, annot[1:]))
     boxes = np.array(bbox, dtype=np.int32).reshape(-1, 4)
+    # boxes: [[x_left, y_top, w, h]] --> [[x_left, y_top, x_right, y_bottom]]
+    boxes[:, 2] = boxes[:, 0] + boxes[:, 2]
+    boxes[:, 3] = boxes[:, 1] + boxes[:, 3]
     img = cv2.imread(im_path)
     idx += 1
     if idx % 100 == 0:
@@ -63,6 +66,7 @@ for annotation in annotations:
         nx = np.random.randint(0, width - size)
         ny = np.random.randint(0, height - size)
         crop_box = np.array([nx, ny, nx + size, ny + size])
+
 
         Iou = IoU(crop_box, boxes)
 
@@ -96,6 +100,7 @@ for annotation in annotations:
             # delta_x and delta_y are offsets of (x1, y1)
 
             delta_x = np.random.randint(max(-size, -x1), w)
+
             delta_y = np.random.randint(max(-size, -y1), h)
             nx1 = max(0, x1 + delta_x)
             ny1 = max(0, y1 + delta_y)
@@ -120,8 +125,10 @@ for annotation in annotations:
             size = np.random.randint(int(min(w, h) * 0.8), np.ceil(1.25 * max(w, h)))
 
             # delta here is the offset of box center
+
             delta_x = np.random.randint(-w * 0.2, w * 0.2)
             delta_y = np.random.randint(-h * 0.2, h * 0.2)
+
 
             nx1 = max(x1 + w / 2 + delta_x - size / 2, 0)
             ny1 = max(y1 + h / 2 + delta_y - size / 2, 0)
