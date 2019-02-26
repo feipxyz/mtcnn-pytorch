@@ -11,11 +11,15 @@ import numpy as np
 from mtcnn.data_preprocess.utils import IoU
 
 prefix = ''
-anno_file = "./anno_store/anno_train.txt"
-im_dir = "./data_set/face_detection/WIDERFACE/WIDER_train/WIDER_train/images"
-pos_save_dir = "./data_set/train/12/positive"
-part_save_dir = "./data_set/train/12/part"
-neg_save_dir = './data_set/train/12/negative'
+
+# 项目基目录
+base_path = os.path.join(os.getcwd(), '../..')
+
+anno_file = os.path.join(base_path, './anno_store/anno_train.txt')
+im_dir = os.path.join(base_path, './data/face_detection/WIDERFACE/WIDER_train/WIDER_train/images')
+pos_save_dir = os.path.join(base_path, './data/train/12/positive')
+part_save_dir = os.path.join(base_path, './data/train/12/part')
+neg_save_dir = os.path.join(base_path, './data/train/12/negative')
 
 if not os.path.exists(pos_save_dir):
     os.mkdir(pos_save_dir)
@@ -25,9 +29,9 @@ if not os.path.exists(neg_save_dir):
     os.mkdir(neg_save_dir)
 
 # store labels of positive, negative, part images
-f1 = open(os.path.join('./anno_store', 'pos_12.txt'), 'w')
-f2 = open(os.path.join('./anno_store', 'neg_12.txt'), 'w')
-f3 = open(os.path.join('./anno_store', 'part_12.txt'), 'w')
+f1 = open(os.path.join(base_path, './anno_store', 'pos_12.txt'), 'w')
+f2 = open(os.path.join(base_path, './anno_store', 'neg_12.txt'), 'w')
+f3 = open(os.path.join(base_path, './anno_store', 'part_12.txt'), 'w')
 
 # anno_file: store labels of the wider face training data
 with open(anno_file, 'r') as f:
