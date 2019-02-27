@@ -16,11 +16,14 @@ from mtcnn.core.utils import convert_to_square,IoU
 import mtcnn.config as config
 import mtcnn.core.vision as vision
 
-prefix_path = ''
-traindata_store = './data_set/train'
-pnet_model_file = './model_store/pnet_epoch.pt'
+# 项目基目录
+base_path = os.path.join(os.getcwd(), '../..')
 
-annotation_file = './anno_store/anno_train_test.txt'
+prefix_path = ''
+traindata_store = os.path.join(base_path, './data_set/train')
+pnet_model_file = os.path.join(base_path, './model_store/pnet_epoch.pt')
+annotation_file = os.path.join(base_path, './anno_store/anno_train.txt')
+
 use_cuda = True
 
 def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda=True, vis=False):
@@ -34,7 +37,6 @@ def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda
     :param vis:
     :return:
     """
-
 
     # load trained pnet model
     pnet, _, _ = create_mtcnn_net(p_model_path=pnet_model_file, use_cuda=use_cuda)
@@ -77,7 +79,7 @@ def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda
 
     # save_path = model_store_path()
     # './model_store'
-    save_path = './model_store'
+    save_path = os.path.join(base_path, './model_store')
 
     if not os.path.exists(save_path):
         os.mkdir(save_path)
@@ -138,7 +140,7 @@ def gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path):
 
 
     # './anno_store'
-    save_path = './anno_store'
+    save_path = os.path.join(base_path, './anno_store')
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -164,7 +166,7 @@ def gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path):
 
         # if (im_idx+1) == 100:
             # break
-
+        # dets shape (-1, 5)
         gts = np.array(gts, dtype=np.float32).reshape(-1, 4)
         if image_done % 100 == 0:
             print("%d images done" % image_done)

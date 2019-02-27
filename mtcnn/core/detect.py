@@ -116,9 +116,9 @@ class MtcnnDetector(object):
             generate bbox from feature map
         Parameters:
         ----------
-            map: numpy array , n x m x 1
+            map: numpy array , h x w x 1
                 detect score for each position
-            reg: numpy array , n x m x 4
+            reg: numpy array , 1 x h x w x 4
                 bbox
             scale: float number
                 scale of this detection
@@ -160,6 +160,7 @@ class MtcnnDetector(object):
 
         # hence t_index[1] means column, t_index[1] is the value of x
         # hence t_index[0] means row, t_index[0] is the value of y
+        # 因为经过了stride为2的2×2的maxpooling，所以对应回原图的要乘以stride
         boundingbox = np.vstack([np.round((stride * t_index[1]) / scale),            # x1 of prediction box in original image
                                  np.round((stride * t_index[0]) / scale),            # y1 of prediction box in original image
                                  np.round((stride * t_index[1] + cellsize) / scale), # x2 of prediction box in original image
@@ -287,10 +288,11 @@ class MtcnnDetector(object):
         while min(current_height, current_width) > net_size:
             # print(i)
             feed_imgs = []
+            # image_tensor shape (c, h, w) 范围变为0-1
             image_tensor = image_tools.convert_image_to_tensor(im_resized)
+            # feed_imgs shape (b, c, h, w) 实际上b为1
             feed_imgs.append(image_tensor)
             feed_imgs = torch.stack(feed_imgs)
-            feed_imgs = Variable(feed_imgs)
 
             if self.pnet_detector.use_cuda:
                 feed_imgs = feed_imgs.cuda()
@@ -302,6 +304,8 @@ class MtcnnDetector(object):
             # 12×12 --> bounding box
             cls_map, reg = self.pnet_detector(feed_imgs)
 
+            # cls_map_np shape (b, h, w, c) c为1
+            # reg_np shape (b, h, w, c) c为4
             cls_map_np = image_tools.convert_chwTensor_to_hwcNumpy(cls_map.cpu())
             reg_np = image_tools.convert_chwTensor_to_hwcNumpy(reg.cpu())
             # print(cls_map_np.shape, reg_np.shape) # cls_map_np = (1, n, m, 1) reg_np.shape = (1, n, m 4)
@@ -312,8 +316,8 @@ class MtcnnDetector(object):
             # print(cls_map_np[0,:,:].shape)
             # time.sleep(4)
 
-            # boxes = [x1, y1, x2, y2, score, reg]
-            boxes = self.generate_bounding_box(cls_map_np[ 0, :, :], reg_np, current_scale, self.thresh[0])
+            # boxes = [x1, y1, x2, y2, score, reg] shape (-1, 9)
+            boxes = self.generate_bounding_box(cls_map_np[0, :, :], reg_np, current_scale, self.thresh[0])
 
             # generate pyramid images
             current_scale *= self.scale_factor # self.scale_factor = 0.709
