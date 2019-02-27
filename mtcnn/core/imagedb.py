@@ -87,7 +87,9 @@ class ImageDB(object):
                       1:dsadsa
         Returns:
         -------
-        imdb: dict
+        imdb: list
+            list中每个元素是一个dict
+            {'image': str图片路径, 'flipped': false, 'bbox_target': [四个坐标], 'landmark_target': [6个关键点]}
             image database with annotations
         """
 

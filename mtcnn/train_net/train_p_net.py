@@ -6,8 +6,11 @@ from mtcnn.core.imagedb import ImageDB
 from mtcnn.train_net.train import train_pnet
 import mtcnn.config as config
 
-annotation_file = './anno_store/imglist_anno_12.txt'
-model_store_path = './model_store'
+# 项目基目录
+base_path = os.path.join(os.getcwd(), '../..')
+
+annotation_file = os.path.join(base_path, './anno_store/imglist_anno_12.txt')
+model_store_path = os.path.join(base_path, './model_store')
 end_epoch = 10
 frequent = 200
 lr = 0.01

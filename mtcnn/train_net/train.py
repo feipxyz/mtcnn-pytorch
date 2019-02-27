@@ -3,9 +3,11 @@ import datetime
 import os
 from mtcnn.core.models import PNet,RNet,ONet,LossFn
 import torch
+import torch.tensor as tensor
 from torch.autograd import Variable
-import mtcnn.core.image_tools as image_tools
 import numpy as np
+from mtcnn.core.image_tools import convert_image_to_tensor
+from mtcnn.core.image_tools import convert_chwTensor_to_hwcNumpy
 
 
 def compute_accuracy(prob_cls, gt_cls):
@@ -49,13 +51,10 @@ def train_pnet(model_store_path, end_epoch,imdb,
 
         for batch_idx,(image,(gt_label,gt_bbox,gt_landmark))in enumerate(train_data):
 
-            im_tensor = [ image_tools.convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
+            im_tensor = [ convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
             im_tensor = torch.stack(im_tensor)
-
-            im_tensor = Variable(im_tensor)
-            gt_label = Variable(torch.from_numpy(gt_label).float())
-
-            gt_bbox = Variable(torch.from_numpy(gt_bbox).float())
+            gt_label = torch.from_numpy(gt_label).float()
+            gt_bbox = torch.from_numpy(gt_bbox).float()
             # gt_landmark = Variable(torch.from_numpy(gt_landmark).float())
 
             if use_cuda:
@@ -116,7 +115,7 @@ def train_rnet(model_store_path, end_epoch,imdb,
 
         for batch_idx,(image,(gt_label,gt_bbox,gt_landmark))in enumerate(train_data):
 
-            im_tensor = [ image_tools.convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
+            im_tensor = [ convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
             im_tensor = torch.stack(im_tensor)
 
             im_tensor = Variable(im_tensor)
@@ -183,7 +182,7 @@ def train_onet(model_store_path, end_epoch,imdb,
 
         for batch_idx,(image,(gt_label,gt_bbox,gt_landmark))in enumerate(train_data):
             # print("batch id {0}".format(batch_idx))
-            im_tensor = [ image_tools.convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
+            im_tensor = [ convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
             im_tensor = torch.stack(im_tensor)
 
             im_tensor = Variable(im_tensor)

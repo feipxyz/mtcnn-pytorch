@@ -44,6 +44,7 @@ n_idx = 0 # negative
 d_idx = 0 # dont care
 idx = 0
 box_idx = 0
+
 for annot in annotations:
     annot = annot.strip().split(' ')
     im_path = os.path.join(prefix, annot[0])
@@ -61,6 +62,7 @@ for annot in annotations:
     height, width, channel = img.shape
 
     neg_num = 0
+    # 一张图片上随机采样50个负样本
     while neg_num < 50:
         size = np.random.randint(12, min(width, height) / 2)
         nx = np.random.randint(0, width - size)
@@ -91,7 +93,7 @@ for annot in annotations:
 
         # ignore small faces
         # in case the ground truth boxes of small faces are not accurate
-        if max(w, h) < 40 or x1 < 0 or y1 < 0:
+        if max(w, h) < 40 or x1 < 0 or y1 < 0 or x2 < 0 or y2 < 0:
             continue
 
         # generate negative examples that have overlap with gt
@@ -125,7 +127,6 @@ for annot in annotations:
             size = np.random.randint(int(min(w, h) * 0.8), np.ceil(1.25 * max(w, h)))
 
             # delta here is the offset of box center
-
             delta_x = np.random.randint(-w * 0.2, w * 0.2)
             delta_y = np.random.randint(-h * 0.2, h * 0.2)
 
@@ -148,12 +149,13 @@ for annot in annotations:
             resized_im = cv2.resize(cropped_im, (12, 12), interpolation=cv2.INTER_LINEAR)
 
             box_ = box.reshape(1, -1)
-            if IoU(crop_box, box_) >= 0.65:
+            iou_result = IoU(crop_box, box_)
+            if iou_result >= 0.65:
                 save_file = os.path.join(pos_save_dir, "%s.jpg" % p_idx)
                 f1.write(save_file + ' 1 %.2f %.2f %.2f %.2f\n' % (offset_x1, offset_y1, offset_x2, offset_y2))
                 cv2.imwrite(save_file, resized_im)
                 p_idx += 1
-            elif IoU(crop_box, box_) >= 0.4:
+            elif iou_result >= 0.4:
                 save_file = os.path.join(part_save_dir, "%s.jpg" % d_idx)
                 f3.write(save_file + ' -1 %.2f %.2f %.2f %.2f\n' % (offset_x1, offset_y1, offset_x2, offset_y2))
                 cv2.imwrite(save_file, resized_im)
