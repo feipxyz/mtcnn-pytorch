@@ -118,11 +118,10 @@ def train_rnet(model_store_path, end_epoch,imdb,
             im_tensor = [ convert_image_to_tensor(image[i,:,:,:]) for i in range(image.shape[0]) ]
             im_tensor = torch.stack(im_tensor)
 
-            im_tensor = Variable(im_tensor)
-            gt_label = Variable(torch.from_numpy(gt_label).float())
+            gt_label = torch.from_numpy(gt_label).float()
 
-            gt_bbox = Variable(torch.from_numpy(gt_bbox).float())
-            gt_landmark = Variable(torch.from_numpy(gt_landmark).float())
+            gt_bbox = torch.from_numpy(gt_bbox).float()
+            gt_landmark = torch.from_numpy(gt_landmark).float()
 
             if use_cuda:
                 im_tensor = im_tensor.cuda()

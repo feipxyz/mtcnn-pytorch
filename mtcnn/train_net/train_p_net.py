@@ -11,7 +11,7 @@ base_path = os.path.join(os.getcwd(), '../..')
 
 annotation_file = os.path.join(base_path, './anno_store/imglist_anno_12.txt')
 model_store_path = os.path.join(base_path, './model_store')
-end_epoch = 1
+end_epoch = 10
 frequent = 200
 lr = 0.01
 batch_size = 2048

@@ -6,8 +6,7 @@ from mtcnn.core.imagedb import ImageDB
 import mtcnn.train_net.train as train
 import mtcnn.config as config
 
-
-
+base_path = os.path.join(os.getcwd(), '../..')
 
 def train_net(annotation_file, model_store_path,
                 end_epoch=16, frequent=200, lr=0.01, batch_size=128, use_cuda=False):
@@ -48,10 +47,10 @@ if __name__ == '__main__':
     print('train Rnet argument:')
     print(args)
 
-    annotation_file = "./anno_store/imglist_anno_24.txt"
-    model_store_path = "./model_store"
+    annotation_file = os.path.join(base_path, "./anno_store/imglist_anno_24.txt")
+    model_store_path = os.path.join(base_path, "./model_store")
     end_epoch = 10
-    lr = 0.01
+    lr = 0.001
     batch_size = 32
 
     use_cuda = True

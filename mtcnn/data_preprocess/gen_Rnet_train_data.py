@@ -20,11 +20,11 @@ import mtcnn.core.vision as vision
 base_path = os.path.join(os.getcwd(), '../..')
 
 prefix_path = ''
-traindata_store = os.path.join(base_path, './data_set/train')
+traindata_store = os.path.join(base_path, './data/train')
 pnet_model_file = os.path.join(base_path, './model_store/pnet_epoch.pt')
 annotation_file = os.path.join(base_path, './anno_store/anno_train.txt')
 
-use_cuda = True
+use_cuda = False
 
 def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda=True, vis=False):
 

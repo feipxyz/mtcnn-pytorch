@@ -398,6 +398,7 @@ class MtcnnDetector(object):
                               ])
         boxes_align = boxes_align.T
 
+        # boxes送入网络参与运算的位置，boes_align是根据预测的便宜得到的人脸的位置
         return boxes, boxes_align
 
     def detect_rnet(self, im, dets):

@@ -13,11 +13,14 @@ from six.moves import cPickle
 from mtcnn.core.utils import convert_to_square,IoU
 import mtcnn.core.vision as vision
 
+# 项目基目录
+base_path = os.path.join(os.getcwd(), '../..')
+
 prefix_path = ''
-traindata_store = './data_set/train'
-pnet_model_file = './model_store/pnet_epoch.pt'
-rnet_model_file = './model_store/rnet_epoch.pt'
-annotation_file = './anno_store/anno_train_test.txt'
+traindata_store = os.path.join(base_path, './data_set/train')
+pnet_model_file = os.path.join(base_path, './model_store/pnet_epoch.pt')
+rnet_model_file = os.path.join(base_path, './model_store/rnet_epoch.pt')
+annotation_file = os.path.join(base_path, './anno_store/anno_train.txt')
 use_cuda = True
 
 def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_path='', use_cuda=True, vis=False):
@@ -35,7 +38,7 @@ def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_
 
     print('size:%d' % image_reader.size)
     for databatch in image_reader:
-        if batch_idx % 50 == 0:
+        if batch_idx % 100 == 0:
             print("%d images done" % batch_idx)
 
         im = databatch
@@ -61,7 +64,7 @@ def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_
         all_boxes.append(boxes_align)
         batch_idx += 1
 
-    save_path = './model_store'
+    save_path = os.path.join(base_path, './model_store')
 
     if not os.path.exists(save_path):
         os.mkdir(save_path)
@@ -112,7 +115,7 @@ def gen_onet_sample_data(data_dir,anno_file,det_boxs_file,prefix):
         im_idx_list.append(im_idx)
         gt_boxes_list.append(boxes)
 
-    save_path = './anno_store'
+    save_path = os.path.join(base_path, './anno_store')
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 

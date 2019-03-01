@@ -129,6 +129,8 @@ class RNet(nn.Module):
             nn.PReLU()  # prelu3
 
         )
+
+        # TODO: 论文上是3*3，为什么这里是2*2
         self.conv4 = nn.Linear(64*2*2, 128)  # conv4
         self.prelu4 = nn.PReLU()  # prelu4
         # detection
